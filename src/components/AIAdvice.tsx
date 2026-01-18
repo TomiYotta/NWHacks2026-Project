@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getSleepAdvice } from '../services/geminiService';
 import { SleepDebtLevel } from '../types';
 
@@ -11,27 +11,47 @@ interface AIAdviceProps {
 const AIAdvice: React.FC<AIAdviceProps> = ({ debt, streak, level }) => {
   const [advice, setAdvice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Debounce or just load once per critical change to save tokens
-    const fetchAdvice = async () => {
-        setLoading(true);
-        const result = await getSleepAdvice(debt, streak, level);
-        setAdvice(result);
-        setLoading(false);
-    };
+    let cancelled = false;
 
-    if (debt > 0 || streak > 0) {
-        fetchAdvice();
+    if (debt <= 0 && streak <= 0) {
+      setAdvice(null);
+      setLoading(false);
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [level]); // Only re-fetch if level changes to avoid spamming API on small hour adjustments
+
+    if (debounceRef.current) {
+      window.clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = window.setTimeout(async () => {
+      setLoading(true);
+      try {
+        const result = await getSleepAdvice(debt, streak, level);
+        if (!cancelled) setAdvice(result);
+      } catch {
+        if (!cancelled) setAdvice("Couldn't fetch advice right now. Try again later.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }, 500);
+
+    return () => {
+      cancelled = true;
+      if (debounceRef.current) {
+        window.clearTimeout(debounceRef.current);
+      }
+    };
+  }, [debt, streak, level]);
 
   return (
     <div className="bg-gradient-to-r from-indigo-900 to-slate-900 rounded-2xl p-6 border border-indigo-500/30 relative overflow-hidden">
       <div className="absolute top-0 right-0 p-4 opacity-10">
         <svg className="w-24 h-24 text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
-             <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6a1 1 0 0 0-1 1v5.59l3.71 3.7a1 1 0 0 0 1.41-1.41L13 11.41V7a1 1 0 0 0-1-1z"/>
+          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+          <path d="M12 6a1 1 0 0 0-1 1v5.59l3.71 3.7a1 1 0 0 0 1.41-1.41L13 11.41V7a1 1 0 0 0-1-1z"/>
         </svg>
       </div>
 
