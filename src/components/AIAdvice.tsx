@@ -16,27 +16,23 @@ const AIAdvice: React.FC<AIAdviceProps> = ({ debt, streak, level }) => {
   useEffect(() => {
     let cancelled = false;
 
-    if (debt <= 0 && streak <= 0) {
-      setAdvice(null);
-      setLoading(false);
-      return;
-    }
-
+    // Reset debounce timer on every prop change
     if (debounceRef.current) {
       window.clearTimeout(debounceRef.current);
     }
 
+    setLoading(true);
+
     debounceRef.current = window.setTimeout(async () => {
-      setLoading(true);
       try {
         const result = await getSleepAdvice(debt, streak, level);
         if (!cancelled) setAdvice(result);
-      } catch {
+      } catch (e) {
         if (!cancelled) setAdvice("Couldn't fetch advice right now. Try again later.");
       } finally {
         if (!cancelled) setLoading(false);
       }
-    }, 500);
+    }, 1000); // Debounce for 1 second to avoid rapid API calls during inputs
 
     return () => {
       cancelled = true;
@@ -50,8 +46,7 @@ const AIAdvice: React.FC<AIAdviceProps> = ({ debt, streak, level }) => {
     <div className="bg-gradient-to-r from-indigo-900 to-slate-900 rounded-2xl p-6 border border-indigo-500/30 relative overflow-hidden">
       <div className="absolute top-0 right-0 p-4 opacity-10">
         <svg className="w-24 h-24 text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
-          <path d="M12 6a1 1 0 0 0-1 1v5.59l3.71 3.7a1 1 0 0 0 1.41-1.41L13 11.41V7a1 1 0 0 0-1-1z"/>
+             <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6a1 1 0 0 0-1 1v5.59l3.71 3.7a1 1 0 0 0 1.41-1.41L13 11.41V7a1 1 0 0 0-1-1z"/>
         </svg>
       </div>
 
@@ -61,7 +56,7 @@ const AIAdvice: React.FC<AIAdviceProps> = ({ debt, streak, level }) => {
       </div>
 
       <div className="relative z-10">
-        {loading ? (
+        {loading && !advice ? (
           <div className="space-y-2 animate-pulse">
             <div className="h-4 bg-indigo-800/50 rounded w-3/4"></div>
             <div className="h-4 bg-indigo-800/50 rounded w-full"></div>
