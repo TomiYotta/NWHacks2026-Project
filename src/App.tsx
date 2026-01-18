@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Auth from './components/Auth';
 import SleepChart from './components/SleepChart';
+import DebtChart from './components/DebtChart';
 import Mascot from './components/Mascot';
 import AIAdvice from './components/AIAdvice';
 import CalendarView from './components/CalendarView';
@@ -18,6 +19,9 @@ function App() {
   // Missed Days State
   const [missingDates, setMissingDates] = useState<string[]>([]);
   const [missedInputs, setMissedInputs] = useState<{[date: string]: string}>({});
+
+  // Chart Toggle State (instead of carousel)
+  const [showDebtChart, setShowDebtChart] = useState<boolean>(false);
 
   useEffect(() => {
     // Check for existing session
@@ -80,29 +84,24 @@ function App() {
   // --- Calculations ---
 
   const { totalDebt, streak, debtLevel, weeklyStats } = useMemo(() => {
-    let accumulatedDebt = 0;
+    let runningDebt = 0;
     let currentStreak = 0;
+    const debtHistory = new Map<string, number>();
     
-    // Sort chronological for streak calculation
+    // Sort chronological for calculation
     const sortedLogs = [...logs].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-    // Calculate Debt (Cumulative)
+    // Calculate Debt (Cumulative History)
     sortedLogs.forEach(log => {
-      // 8 hours is baseline
       const dailyDeficit = 8 - log.hours;
+      runningDebt += dailyDeficit;
+      if (runningDebt < 0) runningDebt = 0;
       
-      // Prompt: "adding any hours missed below the 8-hour threshold, ensuring sleep debt never goes below zero"
-      // Interpretation: Debt goes up if < 8. Does it go down if > 8? 
-      // Typically yes, you "pay off" debt.
-      // "Ensuring sleep debt never goes below zero" implies subtraction is possible.
-      
-      accumulatedDebt += dailyDeficit;
-      if (accumulatedDebt < 0) accumulatedDebt = 0;
+      // Store the debt level at the end of this specific day
+      debtHistory.set(log.date, runningDebt);
     });
 
     // Calculate Streak (Backwards from latest)
-    // In a real app we'd check if days are consecutive. 
-    // Here we just count consecutive good entries from the end of the array.
     for (let i = sortedLogs.length - 1; i >= 0; i--) {
       if (sortedLogs[i].hours >= 8) {
         currentStreak++;
@@ -111,15 +110,17 @@ function App() {
       }
     }
 
-    // Debt Level
+    // Debt Level (based on final current debt)
     let level = SleepDebtLevel.Minimal;
-    if (accumulatedDebt >= 12) level = SleepDebtLevel.Severe;
-    else if (accumulatedDebt >= 6) level = SleepDebtLevel.High;
-    else if (accumulatedDebt >= 2) level = SleepDebtLevel.Moderate;
+    if (runningDebt >= 12) level = SleepDebtLevel.Severe;
+    else if (runningDebt >= 6) level = SleepDebtLevel.High;
+    else if (runningDebt >= 2) level = SleepDebtLevel.Moderate;
+    else level = SleepDebtLevel.Low;
 
-    // Weekly Stats for Chart (Last 7 days relative to today)
+    // Weekly Stats for Charts (Last 7 days relative to today)
     const stats: DailyStat[] = [];
     const today = new Date();
+    
     for (let i = 6; i >= 0; i--) {
         const d = new Date(today);
         d.setDate(d.getDate() - i);
@@ -127,15 +128,29 @@ function App() {
         const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
         
         const log = logs.find(l => l.date === dStr);
+        
+        // Find historical debt for this day
+        let historicalDebt = 0;
+        if (debtHistory.has(dStr)) {
+            historicalDebt = debtHistory.get(dStr)!;
+        } else {
+            // If we don't have a log for this day, assume debt hasn't changed from the last known log
+            // This prevents the chart from dipping to 0 if today/yesterday isn't filled yet
+            const prevLog = sortedLogs.filter(l => l.date < dStr).pop();
+            if (prevLog) {
+                historicalDebt = debtHistory.get(prevLog.date)!;
+            }
+        }
+        
         stats.push({
             date: dStr,
             dayName,
             hours: log ? log.hours : 0,
-            debt: 0 // Placeholder, chart handles cumulative via prop if needed, or just hours
+            debt: historicalDebt
         });
     }
 
-    return { totalDebt: accumulatedDebt, streak: currentStreak, debtLevel: level, weeklyStats: stats };
+    return { totalDebt: runningDebt, streak: currentStreak, debtLevel: level, weeklyStats: stats };
   }, [logs]);
 
   // --- Handlers ---
@@ -197,7 +212,7 @@ function App() {
         <div className="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
             <span className="text-orange-400">🔥</span>
             <span className="text-white font-bold">{streak}</span>
-            <span className="text-xs text-slate-400 uppercase">Day Streak</span>
+            <span className="text-xs text-slate-400 uppercase">Streak</span>
         </div>
         <button onClick={handleLogout} className="text-xs text-slate-500 hover:text-white underline">Logout</button>
       </header>
@@ -273,8 +288,21 @@ function App() {
             </section>
         )}
 
-        {/* Charts */}
-        <SleepChart data={weeklyStats} currentDebt={totalDebt} />
+        {/* Charts with Arrow Toggle */}
+        <div className="relative">
+            {showDebtChart ? (
+                <DebtChart 
+                  data={weeklyStats} 
+                  onToggle={() => setShowDebtChart(false)} 
+                />
+            ) : (
+                <SleepChart 
+                  data={weeklyStats} 
+                  currentDebt={totalDebt} 
+                  onToggle={() => setShowDebtChart(true)}
+                />
+            )}
+        </div>
 
         {/* Calendar */}
         <CalendarView logs={logs} />
