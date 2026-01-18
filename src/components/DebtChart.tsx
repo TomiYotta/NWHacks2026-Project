@@ -43,7 +43,7 @@ const DebtChart: React.FC<DebtChartProps> = ({ data, onToggle }) => {
       </div>
       
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+        <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 15 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
           <XAxis 
             dataKey="dayName" 
@@ -51,6 +51,7 @@ const DebtChart: React.FC<DebtChartProps> = ({ data, onToggle }) => {
             fontSize={12} 
             tickLine={false}
             axisLine={false}
+            dy={6}
           />
           <YAxis 
             stroke="#94a3b8" 
@@ -58,6 +59,7 @@ const DebtChart: React.FC<DebtChartProps> = ({ data, onToggle }) => {
             tickLine={false}
             axisLine={false}
             domain={[0, 'auto']}
+            allowDataOverflow={false}
           />
           <Tooltip 
             contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#f8fafc' }}
