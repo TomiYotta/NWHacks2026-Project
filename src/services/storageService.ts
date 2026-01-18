@@ -12,6 +12,7 @@ import { SleepLog, UserProfile } from '../types';
 
 const STORAGE_KEY_LOGS = 'slumbersync_logs';
 const STORAGE_KEY_USER = 'slumbersync_user';
+const STORAGE_KEY_TARGET = 'slumbersync_target';
 
 export const storageService = {
   // --- Auth Simulation ---
@@ -86,5 +87,16 @@ export const storageService = {
 
      currentLogs.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
      localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(currentLogs));
+  },
+
+  async setTargetSleepHours(hours: number): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    localStorage.setItem(STORAGE_KEY_TARGET, hours.toString());
+  },
+
+  async getTargetSleepHours(): Promise<number> {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const data = localStorage.getItem(STORAGE_KEY_TARGET);
+    return data ? parseFloat(data) : 8; // Default to 8 if not set
   }
 };
