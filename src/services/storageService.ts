@@ -10,9 +10,9 @@ import { SleepLog, UserProfile } from '../types';
  * but simulate the async nature of Firebase.
  */
 
-const STORAGE_KEY_LOGS = 'slumbersync_logs';
-const STORAGE_KEY_USER = 'slumbersync_user';
-const STORAGE_KEY_TARGET = 'slumbersync_target';
+const STORAGE_KEY_LOGS = 'tirelesstracker_logs';
+const STORAGE_KEY_USER = 'tirelesstracker_user';
+const STORAGE_KEY_TARGET = 'tirelesstracker_target';
 
 export const storageService = {
   // --- Auth Simulation ---

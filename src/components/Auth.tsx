@@ -27,7 +27,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">SlumberSync</h1>
+        <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Tireless Tracker</h1>
         <p className="text-slate-400">Master your sleep debt.</p>
       </div>
 

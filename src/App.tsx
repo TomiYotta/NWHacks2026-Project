@@ -220,7 +220,7 @@ const handleTargetSubmit = async () => {
       <header className="relative sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center">
         {/* Left */}
         <div>
-            <h1 className="text-xl font-bold text-white">SlumberSync</h1>
+            <h1 className="text-xl font-bold text-white">Tireless Tracker</h1>
             <p className="text-xs text-slate-400">
             Welcome back, {user.displayName}
             </p>
