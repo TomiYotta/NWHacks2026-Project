@@ -6,7 +6,7 @@ interface MascotProps {
 }
 
 const Mascot: React.FC<MascotProps> = ({ level }) => {
-  const imageUrl = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Sloth.png";
+  const imageUrl = "/src/images/Happy-sloth.png";
   
   return (
     <div className="relative w-64 h-64 mx-auto flex items-center justify-center select-none">
