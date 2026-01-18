@@ -1,21 +1,22 @@
+// types.ts
+
 export interface UserProfile {
-  uid: string;
+  id: string;
+  displayName: string;
   email: string;
-  displayName?: string;
 }
 
 export interface SleepLog {
-  id: string;
   date: string; // YYYY-MM-DD
   hours: number;
-  timestamp: number;
 }
 
 export enum SleepDebtLevel {
-  Minimal = 'Minimal', // 0-2 hours
-  Moderate = 'Moderate', // 2-6 hours
-  High = 'High', // 6-12 hours
-  Severe = 'Severe' // > 12 hours
+  Low = 'low',           // 0-2 hours debt (good sleep!)
+  Moderate = 'moderate', // 2-6 hours debt
+  High = 'high',        // 6-12 hours debt
+  Severe = 'severe',    // 12+ hours debt
+  Minimal = 'minimal'    // Alias for Low (backward compatibility)
 }
 
 export interface DailyStat {
