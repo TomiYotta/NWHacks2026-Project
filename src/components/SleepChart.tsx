@@ -47,7 +47,7 @@ const SleepChart: React.FC<SleepChartProps> = ({ data, currentDebt, onToggle }) 
       </div>
       
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+        <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 15 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
           <XAxis 
             dataKey="dayName" 
