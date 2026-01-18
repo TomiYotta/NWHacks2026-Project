@@ -15,6 +15,9 @@ function App() {
   
   // Input State
   const [todayHours, setTodayHours] = useState<string>('');
+
+  // Target Sleep State
+  const [targetSleepHours, setTargetSleepHours] = useState('8');
   
   // Missed Days State
   const [missingDates, setMissingDates] = useState<string[]>([]);
@@ -93,7 +96,7 @@ function App() {
 
     // Calculate Debt (Cumulative History)
     sortedLogs.forEach(log => {
-      const dailyDeficit = 8 - log.hours;
+      const dailyDeficit = parseFloat(targetSleepHours) - log.hours;
       runningDebt += dailyDeficit;
       if (runningDebt < 0) runningDebt = 0;
       
@@ -170,8 +173,18 @@ function App() {
     setTodayHours('');
   };
 
+const handleTargetSubmit = async () => {
+    if (!targetSleepHours) return;
+    const hours = parseFloat(targetSleepHours);
+    if (isNaN(hours)) return;
+
+    await storageService.setTargetSleepHours(hours);
+
+};
+
+
   const handleMissedSubmit = async () => {
-    // Check if all filled
+    // Check if all fille   d
     const allFilled = missingDates.every(date => missedInputs[date] && !isNaN(parseFloat(missedInputs[date])));
     if (!allFilled) {
         alert("Please fill in all missing days first.");
@@ -271,14 +284,37 @@ function App() {
                 <h2 className="text-3xl font-bold text-white">{totalDebt.toFixed(1)}h</h2>
                 <p className="text-sm text-slate-400 uppercase tracking-widest font-semibold">Current Sleep Debt</p>
                 {debtLevel !== SleepDebtLevel.Low && (
-                    <p className="text-xs text-indigo-400 mt-2">Goal: 8h / night</p>
+                    <p className="text-xs text-indigo-400 mt-2">Goal: {targetSleepHours}h / night</p>
                 )}
             </div>
         </section>
 
         {/* AI Advice */}
         <AIAdvice debt={totalDebt} streak={streak} level={debtLevel} />
-
+        
+        {/* Target Sleep */}
+        <section className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-lg">
+                <h3 className="text-white font-bold mb-4">
+                    {"Enter Target Sleep"}
+                </h3>
+                <div className="flex gap-4">
+                    <input 
+                        type="number"
+                        min="0" max="24" step="0.5"
+                        value={targetSleepHours}
+                        onChange={(e) => setTargetSleepHours(e.target.value)}
+                        placeholder="Ex: 7.5"
+                        className="flex-1 bg-slate-900 border border-slate-600 text-white rounded-xl px-4 py-3 text-lg outline-none focus:border-indigo-500 transition-colors"
+                    />
+                    <button 
+                        onClick={handleTargetSubmit}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 rounded-xl transition-colors shadow-lg shadow-indigo-500/20"
+                    >
+                        {'Update'}
+                    </button>
+                </div>
+            </section>
+        
         {/* Sleep Input (Only if caught up) */}
         {missingDates.length === 0 && (
             <section className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-lg">
