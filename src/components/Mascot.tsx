@@ -44,8 +44,8 @@ const Mascot: React.FC<MascotProps> = ({ level }) => {
           {/* Heavy Droopy Eyelids */}
           {level === SleepDebtLevel.Moderate && (
              <>
-                <div className="absolute top-[39%] left-[29%] w-[16%] h-[12%] bg-[#8B6E50] rounded-b-2xl z-20 border-b-4 border-black/30 shadow-md" />
-                <div className="absolute top-[39%] right-[28%] w-[16%] h-[12%] bg-[#8B6E50] rounded-b-2xl z-20 border-b-4 border-black/30 shadow-md" />
+                <div className="absolute top-[44%] left-[36%] w-[12%] h-[10%] bg-[#d4a574] rounded-b-2xl z-20 border-b-2 border-black/20 shadow-md opacity-90" />
+                <div className="absolute top-[44%] right-[36%] w-[12%] h-[10%] bg-[#d4a574] rounded-b-2xl z-20 border-b-2 border-black/20 shadow-md opacity-90" />
              </>
           )}
 
@@ -54,16 +54,16 @@ const Mascot: React.FC<MascotProps> = ({ level }) => {
           {level === SleepDebtLevel.High && (
              <>
                 {/* Red Overlay on Eyes */}
-                <div className="absolute top-[41%] left-[30%] w-[14%] h-[14%] bg-red-600 mix-blend-multiply opacity-50 rounded-full blur-[1px] z-10" />
-                <div className="absolute top-[41%] right-[29%] w-[14%] h-[14%] bg-red-600 mix-blend-multiply opacity-50 rounded-full blur-[1px] z-10" />
+                <div className="absolute top-[45%] left-[37%] w-[11%] h-[11%] bg-red-500 mix-blend-multiply opacity-40 rounded-full blur-sm z-10" />
+                <div className="absolute top-[45%] right-[37%] w-[11%] h-[11%] bg-red-500 mix-blend-multiply opacity-40 rounded-full blur-sm z-10" />
                 
                 {/* Dark Circles / Bags */}
-                <div className="absolute top-[53%] left-[29%] w-[16%] h-[6px] bg-purple-900/40 blur-[3px] rounded-full" />
-                <div className="absolute top-[53%] right-[28%] w-[16%] h-[6px] bg-purple-900/40 blur-[3px] rounded-full" />
+                <div className="absolute top-[54%] left-[36%] w-[12%] h-[8%] bg-purple-900/50 blur-md rounded-full" />
+                <div className="absolute top-[54%] right-[36%] w-[12%] h-[8%] bg-purple-900/50 blur-md rounded-full" />
                 
-                {/* Floating Zzz (but broken/small to show fitful sleepiness) */}
-                <div className="absolute -top-2 right-12 text-2xl font-bold text-slate-500 animate-pulse">?</div>
-                <div className="absolute top-2 right-8 text-xl font-bold text-slate-600 animate-pulse delay-75">!</div>
+                {/* Floating confusion symbols (fitful sleepiness) */}
+                <div className="absolute top-8 right-12 text-3xl font-bold text-gray-400 animate-pulse opacity-60">?</div>
+                <div className="absolute top-14 right-8 text-2xl font-bold text-gray-500 animate-pulse opacity-60" style={{animationDelay: '0.5s'}}>!</div>
              </>
           )}
 
@@ -72,13 +72,13 @@ const Mascot: React.FC<MascotProps> = ({ level }) => {
           {level === SleepDebtLevel.Severe && (
              <>
                  {/* Wide Staring Eyes (White ring to force eye open look) */}
-                 <div className="absolute top-[39%] left-[29%] w-[16%] h-[16%] border-[3px] border-white/90 rounded-full shadow-[0_0_15px_red] z-20" />
-                 <div className="absolute top-[39%] right-[28%] w-[16%] h-[16%] border-[3px] border-white/90 rounded-full shadow-[0_0_15px_red] z-20" />
+                 <div className="absolute top-[43%] left-[36%] w-[12%] h-[13%] border-[3px] border-white/80 rounded-full shadow-[0_0_12px_rgba(255,0,0,0.6)] z-20" />
+                 <div className="absolute top-[43%] right-[36%] w-[12%] h-[13%] border-[3px] border-white/80 rounded-full shadow-[0_0_12px_rgba(255,0,0,0.6)] z-20" />
 
                  {/* Props */}
-                 <div className="absolute bottom-4 -right-4 text-6xl drop-shadow-lg animate-bounce" style={{animationDuration: '0.4s'}}>🥤</div>
-                 <div className="absolute bottom-4 -left-4 text-6xl drop-shadow-lg animate-bounce" style={{animationDuration: '0.5s'}}>☕</div>
-                 <div className="absolute top-0 right-1/2 text-4xl animate-ping">⚡</div>
+                 <div className="absolute bottom-8 -right-6 text-5xl drop-shadow-lg animate-bounce" style={{animationDuration: '0.4s'}}>🥤</div>
+                 <div className="absolute bottom-8 -left-6 text-5xl drop-shadow-lg animate-bounce" style={{animationDuration: '0.5s'}}>☕</div>
+                 <div className="absolute top-4 left-1/2 -translate-x-1/2 text-4xl animate-ping opacity-75">⚡</div>
              </>
           )}
       </div>

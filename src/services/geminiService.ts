@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { SleepDebtLevel } from "../types";
 
-const API_KEY = import.meta.env.VITE_API_KEY || '';
+const API_KEY = (import.meta as any).env.VITE_API_KEY || '';
 
 export const getSleepAdvice = async (
   debtHours: number, 
