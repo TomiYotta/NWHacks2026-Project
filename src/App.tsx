@@ -204,18 +204,34 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-900 pb-20">
       {/* Header / Streak */}
-      <header className="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+      <header className="relative sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center">
+        {/* Left */}
         <div>
-           <h1 className="text-xl font-bold text-white">SlumberSync</h1>
-           <p className="text-xs text-slate-400">Welcome back, {user.displayName}</p>
+            <h1 className="text-xl font-bold text-white">SlumberSync</h1>
+            <p className="text-xs text-slate-400">
+            Welcome back, {user.displayName}
+            </p>
         </div>
-        <div className="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+
+        {/* Center (absolute) */}
+        <div className="absolute left-1/2 -translate-x-1/2">
+            <div className="flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
             <span className="text-orange-400">🔥</span>
             <span className="text-white font-bold">{streak}</span>
             <span className="text-xs text-slate-400 uppercase">Streak</span>
+            </div>
         </div>
-        <button onClick={handleLogout} className="text-xs text-slate-500 hover:text-white underline">Logout</button>
-      </header>
+
+        {/* Right */}
+        <div className="ml-auto">
+            <button
+            onClick={handleLogout}
+            className="text-xs text-slate-500 hover:text-white underline"
+            >
+            Logout
+            </button>
+        </div>
+        </header>
 
       <main className="max-w-md mx-auto p-6 space-y-8">
         
